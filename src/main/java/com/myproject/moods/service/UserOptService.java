@@ -77,7 +77,7 @@ public class UserOptService {
     }
 
     public void update(Userm userm){
-        usersMapper.updateByUsername(userm);
+        usersMapper.updateByPrimaryKeySelective(userm);
     }
 
     public  Userm selectByTel(String tel){

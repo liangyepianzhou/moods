@@ -6,11 +6,13 @@ import com.myproject.moods.pojo.Says;
 import com.myproject.moods.pojo.Userm;
 import com.myproject.moods.service.FileUploadService;
 import com.myproject.moods.service.SaysService;
+//import com.sun.javafx.tools.packager.Log;
+//import com.oracle.tools.packager.Log;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import jdk.internal.jline.internal.Log;
-import lombok.extern.slf4j.XSlf4j;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +34,7 @@ import java.util.concurrent.*;
  */
 @Api(value = "文件相关的接口")
 @RestController
-@XSlf4j
+
 public class FileController {
     final  String avatarPath ="src/main/resources/file/avatar/";
     final  String adPath ="src/main/resources/file/ad/";
@@ -63,10 +65,10 @@ public class FileController {
                         ,@ApiParam(name = "username",value = "用户名",required = true) @RequestParam(name = "username",required = true)  String username
                         ,HttpServletRequest httpServletRequest){
         String fileOriginName =file.getOriginalFilename();
-        Log.info("fileOriginName"+fileOriginName);
+//        Log.info("fileOriginName"+fileOriginName);
         String []filenames =fileOriginName.split(".");
         String newName = UUID.randomUUID()+filenames[1];
-        Log.info("newPath"+newName);
+//        Log.info("newPath"+newName);
         File file1 =new File(avatarPath +newName);
         fileUploadService.storeAvatar(file,file1,username);
         return Resultbean.success();
@@ -122,8 +124,8 @@ public class FileController {
             adNewName =newName;
         }
         else
-            adNewName =null;
-        saysService.insertSays(Says.builder().picture(photoPaths).saywords(says).var(adNewName).build());
+        {adNewName =null;}
+        saysService.insertSays(Says.builder().picture(photoPaths).saywords(says).var(adNewName).username(username).build());
         return  Resultbean.success();
     }
 

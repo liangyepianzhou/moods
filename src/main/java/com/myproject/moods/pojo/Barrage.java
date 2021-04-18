@@ -5,13 +5,19 @@ import java.util.Date;
 
 public class Barrage implements Serializable {
     private Long barId;
-
+    /**
+     * 发布者 需要有
+     */
     private String username;
-
+    /**
+     * 发表时间 可以没有
+     */
     private Date extime;
 
     private String runtime;
-
+    /**
+     * 点赞数可以没有
+     */
     private Byte goodnum;
 
     private String contexts;
@@ -21,6 +27,11 @@ public class Barrage implements Serializable {
     private Byte speed;
 
     private String color;
+    /**
+     *视频路径 必须有
+     */
+    private String var;
+
 
     private static final long serialVersionUID = 1L;
 
@@ -94,5 +105,13 @@ public class Barrage implements Serializable {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public String getVar() {
+        return var;
+    }
+
+    public void setVar(String var) {
+        this.var = var;
     }
 }

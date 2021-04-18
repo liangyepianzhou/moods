@@ -711,6 +711,76 @@ public class BarrageExample {
             addCriterion("color not between", value1, value2, "color");
             return (Criteria) this;
         }
+
+        public Criteria andVarIsNull() {
+            addCriterion("var is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarIsNotNull() {
+            addCriterion("var is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarEqualTo(String value) {
+            addCriterion("var =", value, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarNotEqualTo(String value) {
+            addCriterion("var <>", value, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarGreaterThan(String value) {
+            addCriterion("var >", value, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarGreaterThanOrEqualTo(String value) {
+            addCriterion("var >=", value, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarLessThan(String value) {
+            addCriterion("var <", value, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarLessThanOrEqualTo(String value) {
+            addCriterion("var <=", value, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarLike(String value) {
+            addCriterion("var like", value, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarNotLike(String value) {
+            addCriterion("var not like", value, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarIn(List<String> values) {
+            addCriterion("var in", values, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarNotIn(List<String> values) {
+            addCriterion("var not in", values, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarBetween(String value1, String value2) {
+            addCriterion("var between", value1, value2, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andVarNotBetween(String value1, String value2) {
+            addCriterion("var not between", value1, value2, "var");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

@@ -1,5 +1,6 @@
 package com.myproject.moods.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Builder;
 
 import java.io.Serializable;
@@ -16,7 +17,11 @@ public class Says implements Serializable {
 
     private Date times;
 
+    private String username;
+
     private static final long serialVersionUID = 1L;
+
+
 
     public Long getSayId() {
         return sayId;
@@ -56,5 +61,13 @@ public class Says implements Serializable {
 
     public void setTimes(Date times) {
         this.times = times;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

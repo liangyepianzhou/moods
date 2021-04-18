@@ -37,7 +37,7 @@ public class FileUploadService {
      */
     public  void  avatarUpload(String avatarUrl,String username){
         Userm userm= Userm.builder().avatar(avatarUrl).username(username).build();
-        usermMapper.updateByUsername(userm);
+        usermMapper.updateByPrimaryKeySelective(userm);
     }
     /**
      * 负责所有的文件上传到服务器保存的工作

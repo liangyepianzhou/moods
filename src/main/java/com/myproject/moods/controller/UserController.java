@@ -132,6 +132,8 @@ public class UserController {
            Userm userm =Userm.builder().username(name).password(newPsw).build();
            userOptService.update(userm);
            map.put("msg","密码修改完成");
+          String token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
+           map.put("token",token);
            return  Resultbean.success(map);
        });
 
@@ -219,7 +221,16 @@ public class UserController {
         return Resultbean.success(map);
     }
 
-
+    @PostMapping("users/modify")
+    @ApiOperation("修改用户基本信息")
+    public  Resultbean modify(@ApiParam(name = "userm",value = "除用户名及密码外都可以在此修改") @RequestBody Userm userm){
+        userm.setPassword(null);
+        userOptService.update(userm);
+       String token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
+        Map map =new HashMap();
+        map.put("token",token);
+        return Resultbean.success(map);
+    }
 
 
 

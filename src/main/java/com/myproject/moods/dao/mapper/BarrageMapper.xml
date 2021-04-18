@@ -11,6 +11,7 @@
     <result column="fontsize" jdbcType="TINYINT" property="fontsize" />
     <result column="speed" jdbcType="TINYINT" property="speed" />
     <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="var" jdbcType="VARCHAR" property="var" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -71,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    bar_id, username, extime, runtime, goodnum, contexts, fontsize, speed, color
+    bar_id, username, extime, runtime, goodnum, contexts, fontsize, speed, color, var
   </sql>
   <select id="selectByExample" parameterType="com.myproject.moods.pojo.BarrageExample" resultMap="BaseResultMap">
     select
@@ -106,12 +107,12 @@
   <insert id="insert" parameterType="com.myproject.moods.pojo.Barrage">
     insert into barrage (bar_id, username, extime, 
       runtime, goodnum, contexts, 
-      fontsize, speed, color
-      )
+      fontsize, speed, color, 
+      var)
     values (#{barId,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{extime,jdbcType=DATE}, 
       #{runtime,jdbcType=VARCHAR}, #{goodnum,jdbcType=TINYINT}, #{contexts,jdbcType=VARCHAR}, 
-      #{fontsize,jdbcType=TINYINT}, #{speed,jdbcType=TINYINT}, #{color,jdbcType=VARCHAR}
-      )
+      #{fontsize,jdbcType=TINYINT}, #{speed,jdbcType=TINYINT}, #{color,jdbcType=VARCHAR}, 
+      #{var,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.myproject.moods.pojo.Barrage">
     insert into barrage
@@ -143,6 +144,9 @@
       <if test="color != null">
         color,
       </if>
+      <if test="var != null">
+        var,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="barId != null">
@@ -171,6 +175,9 @@
       </if>
       <if test="color != null">
         #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="var != null">
+        #{var,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -210,6 +217,9 @@
       <if test="record.color != null">
         color = #{record.color,jdbcType=VARCHAR},
       </if>
+      <if test="record.var != null">
+        var = #{record.var,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -225,7 +235,8 @@
       contexts = #{record.contexts,jdbcType=VARCHAR},
       fontsize = #{record.fontsize,jdbcType=TINYINT},
       speed = #{record.speed,jdbcType=TINYINT},
-      color = #{record.color,jdbcType=VARCHAR}
+      color = #{record.color,jdbcType=VARCHAR},
+      var = #{record.var,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -257,6 +268,9 @@
       <if test="color != null">
         color = #{color,jdbcType=VARCHAR},
       </if>
+      <if test="var != null">
+        var = #{var,jdbcType=VARCHAR},
+      </if>
     </set>
     where bar_id = #{barId,jdbcType=BIGINT}
   </update>
@@ -269,7 +283,8 @@
       contexts = #{contexts,jdbcType=VARCHAR},
       fontsize = #{fontsize,jdbcType=TINYINT},
       speed = #{speed,jdbcType=TINYINT},
-      color = #{color,jdbcType=VARCHAR}
+      color = #{color,jdbcType=VARCHAR},
+      var = #{var,jdbcType=VARCHAR}
     where bar_id = #{barId,jdbcType=BIGINT}
   </update>
 </mapper>

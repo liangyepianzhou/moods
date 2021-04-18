@@ -1,7 +1,9 @@
 package com.myproject.moods.pojo;
 
-import java.io.Serializable;
+import lombok.Builder;
 
+import java.io.Serializable;
+@Builder
 public class Collections implements Serializable {
     private Long sayId;
 
