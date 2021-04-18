@@ -1,7 +1,10 @@
 package com.myproject.moods.pojo;
 
-import java.io.Serializable;
+import lombok.Builder;
 
+import java.io.Serializable;
+import java.util.Date;
+@Builder
 public class Says implements Serializable {
     private Long sayId;
 
@@ -10,6 +13,8 @@ public class Says implements Serializable {
     private String picture;
 
     private String var;
+
+    private Date times;
 
     private static final long serialVersionUID = 1L;
 
@@ -43,5 +48,13 @@ public class Says implements Serializable {
 
     public void setVar(String var) {
         this.var = var;
+    }
+
+    public Date getTimes() {
+        return times;
+    }
+
+    public void setTimes(Date times) {
+        this.times = times;
     }
 }

@@ -6,6 +6,7 @@ import com.myproject.moods.pojo.Userm;
 import com.myproject.moods.pojo.UsermExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.DelegatingServerHttpResponse;
+import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -17,6 +18,7 @@ import java.util.List;
  * @version 1.0
  * @Date 2021-04-09
  */
+@Service
 public class UserOptService {
     @Autowired
     UsermMapper usersMapper;
@@ -63,6 +65,8 @@ public class UserOptService {
         Userm userm =Userm.builder().age(date).password(password).phone(phone).sex(sex).username(username).build();
         usersMapper.insert(userm);
     }
+
+
     /**
      * 依据手机号做查询
      * @param username
@@ -72,5 +76,15 @@ public class UserOptService {
         return  usersMapper.selectByPrimaryKey(username);
     }
 
+    public void update(Userm userm){
+        usersMapper.updateByUsername(userm);
+    }
+
+    public  Userm selectByTel(String tel){
+        UsermExample usermExample =new UsermExample();
+        UsermExample.Criteria criteria= usermExample.createCriteria();
+        criteria.andPhoneEqualTo(tel);
+        return usersMapper.selectByExample(usermExample).get(0);
+    }
 
 }

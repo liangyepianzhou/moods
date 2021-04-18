@@ -12,7 +12,7 @@ import java.util.Map;
 @Data
 @Component
 public  class  Resultbean {
-        private String code;
+        private int code;
         private String message;
         private Map data;
     
@@ -27,29 +27,28 @@ public  class  Resultbean {
     
     public static Resultbean success(Map<String,Object> map){
        Resultbean resultbean =new Resultbean();
-        resultbean.setCode("200");
+        resultbean.setCode(200);
         resultbean.setMessage("success");
         resultbean.setData(map);
         return resultbean;
 
-
-
     }
     public static Resultbean success(){
         Resultbean resultbean =new Resultbean();
-        resultbean.setCode("200");
+        resultbean.setCode(200);
         resultbean.setMessage("success");
         return resultbean;
-
-
     }
-    public static Resultbean error(String code , String msg){
+    public static Resultbean noFound(){
+        Resultbean resultbean =new Resultbean();
+        resultbean.setCode(404);
+        resultbean.setMessage("success");
+        return resultbean;
+    }
+    public static Resultbean error(int code , String msg){
         Resultbean resultbean=new Resultbean();
         resultbean.setMessage(msg);
         resultbean.setCode(code);
         return resultbean;
-
     }
-
-
 }

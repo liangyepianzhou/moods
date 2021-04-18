@@ -49,7 +49,25 @@
             <!-- 数据库中表名有时我们都会带个前缀，而实体又不想带前缀，这个配置可以把实体的前缀去掉 -->
             <domainObjectRenamingRule searchString="^Tbl" replaceString=""/>
         </table>
-        <table tableName="woods">
+        <table tableName="words">
+            <!-- 是否只生成POJO对象 -->
+            <property name="modelOnly" value="false"/>
+            <!-- 数据库中表名有时我们都会带个前缀，而实体又不想带前缀，这个配置可以把实体的前缀去掉 -->
+            <domainObjectRenamingRule searchString="^Tbl" replaceString=""/>
+        </table>
+        <table tableName="collections">
+            <!-- 是否只生成POJO对象 -->
+            <property name="modelOnly" value="false"/>
+            <!-- 数据库中表名有时我们都会带个前缀，而实体又不想带前缀，这个配置可以把实体的前缀去掉 -->
+            <domainObjectRenamingRule searchString="^Tbl" replaceString=""/>
+        </table>
+        <table tableName="comments">
+            <!-- 是否只生成POJO对象 -->
+            <property name="modelOnly" value="false"/>
+            <!-- 数据库中表名有时我们都会带个前缀，而实体又不想带前缀，这个配置可以把实体的前缀去掉 -->
+            <domainObjectRenamingRule searchString="^Tbl" replaceString=""/>
+        </table>
+        <table tableName="barrage">
             <!-- 是否只生成POJO对象 -->
             <property name="modelOnly" value="false"/>
             <!-- 数据库中表名有时我们都会带个前缀，而实体又不想带前缀，这个配置可以把实体的前缀去掉 -->

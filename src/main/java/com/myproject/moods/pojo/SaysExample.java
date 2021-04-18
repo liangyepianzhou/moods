@@ -1,6 +1,8 @@
 package com.myproject.moods.pojo;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class SaysExample {
@@ -102,6 +104,32 @@ public class SaysExample {
                 throw new RuntimeException("Between values for " + property + " cannot be null");
             }
             criteria.add(new Criterion(condition, value1, value2));
+        }
+
+        protected void addCriterionForJDBCDate(String condition, Date value, String property) {
+            if (value == null) {
+                throw new RuntimeException("Value for " + property + " cannot be null");
+            }
+            addCriterion(condition, new java.sql.Date(value.getTime()), property);
+        }
+
+        protected void addCriterionForJDBCDate(String condition, List<Date> values, String property) {
+            if (values == null || values.size() == 0) {
+                throw new RuntimeException("Value list for " + property + " cannot be null or empty");
+            }
+            List<java.sql.Date> dateList = new ArrayList<java.sql.Date>();
+            Iterator<Date> iter = values.iterator();
+            while (iter.hasNext()) {
+                dateList.add(new java.sql.Date(iter.next().getTime()));
+            }
+            addCriterion(condition, dateList, property);
+        }
+
+        protected void addCriterionForJDBCDate(String condition, Date value1, Date value2, String property) {
+            if (value1 == null || value2 == null) {
+                throw new RuntimeException("Between values for " + property + " cannot be null");
+            }
+            addCriterion(condition, new java.sql.Date(value1.getTime()), new java.sql.Date(value2.getTime()), property);
         }
 
         public Criteria andSayIdIsNull() {
@@ -371,6 +399,66 @@ public class SaysExample {
 
         public Criteria andVarNotBetween(String value1, String value2) {
             addCriterion("var not between", value1, value2, "var");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesIsNull() {
+            addCriterion("times is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesIsNotNull() {
+            addCriterion("times is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesEqualTo(Date value) {
+            addCriterionForJDBCDate("times =", value, "times");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesNotEqualTo(Date value) {
+            addCriterionForJDBCDate("times <>", value, "times");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesGreaterThan(Date value) {
+            addCriterionForJDBCDate("times >", value, "times");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesGreaterThanOrEqualTo(Date value) {
+            addCriterionForJDBCDate("times >=", value, "times");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesLessThan(Date value) {
+            addCriterionForJDBCDate("times <", value, "times");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesLessThanOrEqualTo(Date value) {
+            addCriterionForJDBCDate("times <=", value, "times");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesIn(List<Date> values) {
+            addCriterionForJDBCDate("times in", values, "times");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesNotIn(List<Date> values) {
+            addCriterionForJDBCDate("times not in", values, "times");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesBetween(Date value1, Date value2) {
+            addCriterionForJDBCDate("times between", value1, value2, "times");
+            return (Criteria) this;
+        }
+
+        public Criteria andTimesNotBetween(Date value1, Date value2) {
+            addCriterionForJDBCDate("times not between", value1, value2, "times");
             return (Criteria) this;
         }
     }

@@ -41,7 +41,7 @@ public class SmsTool {
         request.setPhoneNumbers(phone);
 
         //必填:短信签名-可在短信控制台中找到
-        request.setSignName("智纹");
+        request.setSignName("漂流瓶");
         //必填:短信模板-可在短信控制台中找到
         request.setTemplateCode("SMS_206546093");
         //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
