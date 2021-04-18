@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myproject.moods.dao.mapper.CommentsMapper">
+  <resultMap id="BaseResultMap" type="com.myproject.moods.pojo.Comments">
+    <id column="comment_id" jdbcType="BIGINT" property="commentId" />
+    <result column="say_id" jdbcType="BIGINT" property="sayId" />
+    <result column="contexts" jdbcType="VARCHAR" property="contexts" />
+    <result column="goodnum" jdbcType="TINYINT" property="goodnum" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    comment_id, say_id, contexts, goodnum, username
+  </sql>
+  <select id="selectByExample" parameterType="com.myproject.moods.pojo.CommentsExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from comments
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from comments
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from comments
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.myproject.moods.pojo.CommentsExample">
+    delete from comments
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.myproject.moods.pojo.Comments">
+    insert into comments (comment_id, say_id, contexts, 
+      goodnum, username)
+    values (#{commentId,jdbcType=BIGINT}, #{sayId,jdbcType=BIGINT}, #{contexts,jdbcType=VARCHAR}, 
+      #{goodnum,jdbcType=TINYINT}, #{username,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.myproject.moods.pojo.Comments">
+    insert into comments
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        comment_id,
+      </if>
+      <if test="sayId != null">
+        say_id,
+      </if>
+      <if test="contexts != null">
+        contexts,
+      </if>
+      <if test="goodnum != null">
+        goodnum,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        #{commentId,jdbcType=BIGINT},
+      </if>
+      <if test="sayId != null">
+        #{sayId,jdbcType=BIGINT},
+      </if>
+      <if test="contexts != null">
+        #{contexts,jdbcType=VARCHAR},
+      </if>
+      <if test="goodnum != null">
+        #{goodnum,jdbcType=TINYINT},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.myproject.moods.pojo.CommentsExample" resultType="java.lang.Long">
+    select count(*) from comments
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update comments
+    <set>
+      <if test="record.commentId != null">
+        comment_id = #{record.commentId,jdbcType=BIGINT},
+      </if>
+      <if test="record.sayId != null">
+        say_id = #{record.sayId,jdbcType=BIGINT},
+      </if>
+      <if test="record.contexts != null">
+        contexts = #{record.contexts,jdbcType=VARCHAR},
+      </if>
+      <if test="record.goodnum != null">
+        goodnum = #{record.goodnum,jdbcType=TINYINT},
+      </if>
+      <if test="record.username != null">
+        username = #{record.username,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update comments
+    set comment_id = #{record.commentId,jdbcType=BIGINT},
+      say_id = #{record.sayId,jdbcType=BIGINT},
+      contexts = #{record.contexts,jdbcType=VARCHAR},
+      goodnum = #{record.goodnum,jdbcType=TINYINT},
+      username = #{record.username,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.myproject.moods.pojo.Comments">
+    update comments
+    <set>
+      <if test="sayId != null">
+        say_id = #{sayId,jdbcType=BIGINT},
+      </if>
+      <if test="contexts != null">
+        contexts = #{contexts,jdbcType=VARCHAR},
+      </if>
+      <if test="goodnum != null">
+        goodnum = #{goodnum,jdbcType=TINYINT},
+      </if>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.myproject.moods.pojo.Comments">
+    update comments
+    set say_id = #{sayId,jdbcType=BIGINT},
+      contexts = #{contexts,jdbcType=VARCHAR},
+      goodnum = #{goodnum,jdbcType=TINYINT},
+      username = #{username,jdbcType=VARCHAR}
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </update>
+</mapper>
