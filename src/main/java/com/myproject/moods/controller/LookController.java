@@ -34,12 +34,14 @@ public class LookController {
         @Autowired
         CollectService collectService;
         @ApiOperation("根据用户名查看某个人的说说")
+        @UserLoginToken
         @PostMapping("/says/someone")
         public Resultbean SeeSomeOneSays(@ApiParam(name = "username",value = "用户名",required = true) @RequestParam("username") String username){
                 List list =saysService.searchByName(username);
                 return Resultbean.success(list);
         }
         @ApiParam("查看最近的说说")
+        @UserLoginToken
         @PostMapping("/says/something")
         public  Resultbean seeSomeSays(@ApiParam(name= "count",value = "需要的说说条数",required = true)  @RequestParam(name = "count") int count){
              List list  = saysService.searchSome(count);
@@ -47,6 +49,7 @@ public class LookController {
              return Resultbean.success(list);
         }
         @ApiParam("获取弹幕")
+        @UserLoginToken
         @GetMapping("/barrages")
         public Resultbean barrageGet(@ApiParam(name = "adPath",value = "视频路径",required = true) @RequestParam ("adPath") String adPath){
                 String [] paths = adPath.split("/");
@@ -55,6 +58,7 @@ public class LookController {
                 return  Resultbean.success(list);
         }
         @ApiOperation("收藏说说")
+        @UserLoginToken
         @GetMapping("says/collect")
         public Resultbean SaysColl(@ApiParam(name = "saysId",value = "说说ID",required = true)@RequestParam("saysId") Long saysId,
                                    HttpServletRequest httpServletRequest
@@ -73,6 +77,7 @@ public class LookController {
 
 
         @ApiOperation("查看收藏")
+        @UserLoginToken
         @GetMapping("collections/my")
         public  Resultbean SeeColl(HttpServletRequest httpServletRequest){
                 String token =httpServletRequest.getHeader("token");

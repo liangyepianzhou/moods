@@ -3,6 +3,7 @@ package com.myproject.moods.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.myproject.moods.Util.Resultbean;
+import com.myproject.moods.annotation.UserLoginToken;
 import com.myproject.moods.pojo.Barrage;
 import com.myproject.moods.pojo.Comments;
 import com.myproject.moods.service.BarrageService;
@@ -29,6 +30,7 @@ public class ToComment {
     @Autowired
     CommentService commentService;
     @ApiOperation("弹幕发表")
+    @UserLoginToken
     @PostMapping("/says/bullet")
     public Resultbean bulletSend(@ApiParam(name = "barrage",value = "弹幕内容") @RequestBody Barrage barrage
 //                                      @ApiParam(name = "varPath",value = "视频文件的路径") @RequestParam("varPath") String varPath
@@ -38,6 +40,7 @@ public class ToComment {
         return  Resultbean.success();
     }
     @ApiOperation("发表评论")
+    @UserLoginToken
     @PostMapping("/says/comment")
     public Resultbean commentSent(@ApiParam(name = "saysId",value = "说说ID",required = true)@RequestParam("saysId") Long saysId,
                                  @ApiParam(name = "context",value = "评论内容，限长100字",required = true)@RequestParam("context") String context

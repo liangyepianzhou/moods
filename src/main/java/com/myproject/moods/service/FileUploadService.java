@@ -2,6 +2,7 @@ package com.myproject.moods.service;
 
 import com.myproject.moods.dao.mapper.SaysMapper;
 import com.myproject.moods.dao.mapper.UsermMapper;
+import com.myproject.moods.pojo.Says;
 import com.myproject.moods.pojo.Userm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,27 +40,22 @@ public class FileUploadService {
         Userm userm= Userm.builder().avatar(avatarUrl).username(username).build();
         usermMapper.updateByPrimaryKeySelective(userm);
     }
+
+
+
     /**
      * 负责所有的文件上传到服务器保存的工作
      * @param inputStream
      * @param ToWhere
      * @throws IOException
      */
-    public void storeFile(InputStream inputStream,String ToWhere) throws IOException {
-        BufferedInputStream bufferedInputStream =new BufferedInputStream(inputStream);
-        File file =new File(ToWhere);
-        BufferedOutputStream bufferedOutputStream =new BufferedOutputStream(new FileOutputStream(file));
-        byte []buffer =new byte[1024];
+    public void storeFile(MultipartFile file,File file1) throws IOException {
         executorService.submit(()->{
             try {
-                while (true) {
-                bufferedInputStream.read(buffer);
-                if (buffer.length != 0) {
-                    bufferedOutputStream.write(buffer);
-                    bufferedOutputStream.flush();
+                if(!file1.exists()){
+                    file1.getParentFile().mkdirs();
                 }
-                else
-                    break;}
+                file.transferTo(file1);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -68,6 +64,9 @@ public class FileUploadService {
     public void storeAvatar(MultipartFile file,File file1,String username){
             executorService.submit(()->{
                 try {
+                    if(!file1.exists()){
+                     file1.getParentFile().mkdirs();
+                    }
                     file.transferTo(file1);
                 } catch (IOException e) {
                     e.printStackTrace();

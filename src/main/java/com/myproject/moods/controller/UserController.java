@@ -7,6 +7,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.myproject.moods.Util.CodeUtil;
 import com.myproject.moods.Util.Resultbean;
 import com.myproject.moods.Util.SmsTool;
+import com.myproject.moods.annotation.UserLoginToken;
 import com.myproject.moods.pojo.Userm;
 import com.myproject.moods.service.UserOptService;
 
@@ -80,7 +81,7 @@ public class UserController {
      * @throws ClientException
      */
     @ApiOperation("短信发送")
-    @RequestMapping(value = "/smsXxs")
+    @GetMapping(value = "/smsXxs")
     @ResponseBody
     public Map<String,Object> smsXxs(@ApiParam(name = "phone",value = "用户电话号码，用于发送短信",required = true) @RequestParam(name = "phone")String phone,
                                      HttpServletRequest request) throws ClientException {
@@ -104,7 +105,7 @@ public class UserController {
             map.put("isOk","OK");
         }
 
-        String sms = code+"-"+ time;
+        String sms = code+"/"+ time;
         hashMap.put(phone,sms);
 
 
@@ -140,16 +141,17 @@ public class UserController {
     }
     @ApiOperation(value = "用户注册接口")
     @PostMapping(value = "/register")
-    public Resultbean register(@ApiParam(name = "name",value = "用户昵称",required = true) @RequestParam(name = "name") String name,
-                               @ApiParam(name = "tel",value = "电话号码",required = true)  @RequestParam(name = "tel") String tel,
+    public Resultbean register(@ApiParam(name = "name",value = "用户昵称最长七位",required = true) @RequestParam(name = "name") String name,
+                               @ApiParam(name = "tel",value = "电话号码十一位",required = true)  @RequestParam(name = "tel") String tel,
                                @ApiParam(name = "gender",value = "性别",required = true) @RequestParam(name = "gender") Boolean gender,
                                @ApiParam(name = "psw",value = "新密码",required = true)  @RequestParam(name = "psw") String psw,
                                @ApiParam(name = "age",value = "年龄",required = true)  @RequestParam(name = "age") int age,
                                @ApiParam(name = "pin",value = "用户输入的验证码",required = true)  @RequestParam(name = "pin") String pin
                                ){
             String newPsw = DigestUtils.md5DigestAsHex(psw.getBytes()).toString();
+
            return msgCheck(tel,pin,()->{
-               userOptService.insert(name,tel,gender,age,newPsw);
+               userOptService.insert(name,tel,gender,age,psw);
                 Map map =new HashMap();
                 map.put("msg","注册成功");
                 return  Resultbean.success(map);
@@ -168,9 +170,11 @@ public class UserController {
         Map map =new HashMap();
         String res =hashMap.get(tel);
         if(res!=null){
-            String[]re =  res.split("-");
-            Date date =new Date(re[1]);
-            if(re[0]!=pin){
+            String[]re =  res.split("/");
+//            Date date =new Date(re[1]);
+
+            Timestamp date =Timestamp.valueOf(re[1]);
+            if(!re[0].equals(pin)){
                 map.put("msg","用户验证码输入错误");
                 return Resultbean.success(map);
             }
@@ -194,13 +198,13 @@ public class UserController {
 
     @ApiOperation(value = "登录接口")
     @PostMapping("users/load")
-    public  Resultbean loadIn(@ApiParam(name = "tel",value = "电话号码",required = true)  @RequestParam(name = "tel")  String tel,
-                              @ApiParam(name = "psw",value = "新密码",required = true)  @RequestParam(name = "psw")  String psw,
-                              @ApiParam(name = "pin",value = "用户输入的验证码",required = true)  @RequestParam(name = "pin") String pin
+    public  Resultbean loadIn(@ApiParam(name = "tel",value = "电话号码",required = false)  @RequestParam(name = "tel")  String tel,
+                              @ApiParam(name = "psw",value = "新密码",required = false)  @RequestParam(name = "psw",required = false)  String psw,
+                              @ApiParam(name = "pin",value = "用户输入的验证码",required = true)  @RequestParam(name = "pin",required = false) String pin
                               ){
         Map map =new HashMap();
         if(psw!=null){
-            if(userOptService.selectByTel(tel).getPassword()!=psw){
+            if(!userOptService.selectByTel(tel).getPassword().equals(psw)){
               map.put("msg","账户密码错误");
               return Resultbean.success(map);
             }
@@ -223,12 +227,11 @@ public class UserController {
 
     @PostMapping("users/modify")
     @ApiOperation("修改用户基本信息")
+    @UserLoginToken
     public  Resultbean modify(@ApiParam(name = "userm",value = "除用户名及密码外都可以在此修改") @RequestBody Userm userm){
         userm.setPassword(null);
         userOptService.update(userm);
-       String token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
         Map map =new HashMap();
-        map.put("token",token);
         return Resultbean.success(map);
     }
 

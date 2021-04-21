@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,10 +48,10 @@ public class SaysService {
             Sayx sayx =new Sayx();
             String [] pictures= says.getPicture().split("//+");
             for (int i = 0; i <pictures.length ; i++) {
-                pictures[i]=photoPath+pictures[i];
+                pictures[i]=new File(photoPath+pictures[i]).getAbsolutePath();
             }
             sayx.setPictures(pictures);
-            sayx.setAd(adPath+says.getVar());
+            sayx.setAd(new File(adPath+says.getVar()).getAbsolutePath());
             sayx.setSays(says);
             list1.add(sayx);
         }
