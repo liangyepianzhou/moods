@@ -3,8 +3,8 @@ package com.myproject.moods.controller;
 import com.myproject.moods.Util.Resultbean;
 import com.myproject.moods.annotation.UserLoginToken;
 import com.myproject.moods.dao.mapper.UsermMapper;
+import com.myproject.moods.filter.SensitiveWordFilter;
 import com.myproject.moods.pojo.Says;
-import com.myproject.moods.pojo.Userm;
 import com.myproject.moods.service.FileUploadService;
 import com.myproject.moods.service.SaysService;
 //import com.sun.javafx.tools.packager.Log;
@@ -16,17 +16,16 @@ import io.swagger.annotations.ApiParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.*;
 
 /**
  * @author 孟祥迎
@@ -43,6 +42,7 @@ public class FileController {
     /***
      * 可以考虑在数据库中只存储文件名，再加上路径拼接
      */
+
     @Autowired
     UsermMapper usermMapper;
     @Autowired
@@ -83,7 +83,7 @@ public class FileController {
                                  @ApiParam(name = "says",value = "说说文字/限长500字",required =  true)@RequestParam("says") String says,
                                  @ApiParam(name = "username",value = "用户名",required = true)@RequestParam("username") String username
                                  )  {
-        String path;
+
         String photoPaths;
         String adNewName;
         /**
@@ -128,8 +128,15 @@ public class FileController {
         }
         else
         {adNewName =null;}
+        /**
+         * 过滤说说文本，替换敏感词，将敏感词返回
+         */
+        Set set =SensitiveWordFilter.getSensitiveWord(says,1);
+        says =SensitiveWordFilter.replaceSensitiveWord(says,"*",set);
         saysService.insertSays(Says.builder().picture(photoPaths).saywords(says).var(adNewName).username(username).build());
-        return  Resultbean.success();
+        HashMap hashMap =new HashMap();
+        hashMap.put("sensitiveWord",set);
+        return  Resultbean.success(hashMap);
     }
 
 

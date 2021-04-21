@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.myproject.moods.Util.Resultbean;
 import com.myproject.moods.annotation.UserLoginToken;
+import com.myproject.moods.filter.SensitiveWordFilter;
 import com.myproject.moods.pojo.Barrage;
 import com.myproject.moods.pojo.Comments;
 import com.myproject.moods.service.BarrageService;
@@ -15,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * @author 孟祥迎
@@ -36,8 +40,12 @@ public class ToComment {
 //                                      @ApiParam(name = "varPath",value = "视频文件的路径") @RequestParam("varPath") String varPath
     ){
 //                String  []path =varPath.split("/");
+        Set set =SensitiveWordFilter.getSensitiveWord(barrage.getContexts(),1);
+        barrage.setContexts(SensitiveWordFilter.replaceSensitiveWord(barrage.getContexts(),"*",set));
+        HashMap hashMap =new HashMap();
+        hashMap.put("sensitiveWord",set);
         barrageService.insertBarrage(barrage);
-        return  Resultbean.success();
+        return  Resultbean.success(hashMap);
     }
     @ApiOperation("发表评论")
     @UserLoginToken
@@ -53,8 +61,12 @@ public class ToComment {
         } catch (JWTDecodeException j) {
             throw new RuntimeException("401");
         }
+        Set set =SensitiveWordFilter.getSensitiveWord(context,1);
+        context =SensitiveWordFilter.replaceSensitiveWord(context,"*",set);
+        HashMap hashMap =new HashMap();
+        hashMap.put("sensitiveWord",set);
         commentService.insertComment(Comments.builder().contexts(context).username(username).sayId(saysId).build());
-        return Resultbean.success();
+        return Resultbean.success(hashMap);
     }
 
 
