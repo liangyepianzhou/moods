@@ -20,10 +20,6 @@ public class SmsTool {
     //产品名称:云通信短信API产品,开发者无需替换
     static final String product = "Dysmsapi";
     //产品域名,开发者无需替换
-    static final String domain = "dysmsapi.aliyuncs.com";
-    // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
-    static final String accessKeyId = "LTAI4GEMC5x5wM3NfqpN7NPt";
-    static final String accessKeySecret = "mKgT7EEYNbcY0RjFHn5lg8h2TJ5TWn";
 
     public static SendSmsResponse sendSms(String phone , String code, String TemplateCode) throws ClientException {
         //可自助调整超时时间
