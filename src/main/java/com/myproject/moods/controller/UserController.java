@@ -66,7 +66,7 @@ public class UserController {
 
         }
 
-        return Resultbean.success(map);
+        return Resultbean.success(map,200);
    }
 
 
@@ -108,7 +108,6 @@ public class UserController {
         String sms = code+"/"+ time;
         hashMap.put(phone,sms);
 
-
         return map;
     }
 
@@ -135,7 +134,7 @@ public class UserController {
            map.put("msg","密码修改完成");
           String token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
            map.put("token",token);
-           return  Resultbean.success(map);
+           return  Resultbean.success(map,200);
        });
 
     }
@@ -154,7 +153,7 @@ public class UserController {
                userOptService.insert(name,tel,gender,age,psw);
                 Map map =new HashMap();
                 map.put("msg","注册成功");
-                return  Resultbean.success(map);
+                return  Resultbean.success(map,200);
             });
     }
 
@@ -176,37 +175,38 @@ public class UserController {
             Timestamp date =Timestamp.valueOf(re[1]);
             if(!re[0].equals(pin)){
                 map.put("msg","用户验证码输入错误");
-                return Resultbean.success(map);
+                return Resultbean.success(map,100);
             }
             if(System.currentTimeMillis()-date.getTime()<time){
+                hashMap.remove(tel);
                 return (Resultbean) t.get();
             }
             else
             {
                 hashMap.remove(tel);
                 map.put("msg","用户验证码输入超时");
-                return Resultbean.success(map);
+                return Resultbean.success(map,100);
             }
 
         }
         else
         {
             map.put("msg","请重新发送验证码");
-            return Resultbean.success(map);
+            return Resultbean.success(map,100);
         }
     }
 
     @ApiOperation(value = "登录接口")
     @PostMapping("users/load")
-    public  Resultbean loadIn(@ApiParam(name = "tel",value = "电话号码",required = false)  @RequestParam(name = "tel")  String tel,
+    public  Resultbean loadIn(@ApiParam(name = "tel",value = "电话号码",required = true)  @RequestParam(name = "tel")  String tel,
                               @ApiParam(name = "psw",value = "新密码",required = false)  @RequestParam(name = "psw",required = false)  String psw,
-                              @ApiParam(name = "pin",value = "用户输入的验证码",required = true)  @RequestParam(name = "pin",required = false) String pin
+                              @ApiParam(name = "pin",value = "用户输入的验证码",required = false)  @RequestParam(name = "pin",required = false) String pin
                               ){
         Map map =new HashMap();
         if(psw!=null){
             if(!userOptService.selectByTel(tel).getPassword().equals(psw)){
               map.put("msg","账户密码错误");
-              return Resultbean.success(map);
+              return Resultbean.success(map,100);
             }
         }
         else if(pin!=null){
@@ -215,14 +215,15 @@ public class UserController {
                 String token ="";
                 token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
                 map.put("token",token);
-                return Resultbean.success(map);
+                return Resultbean.success(map,200);
             });
         }
         Userm userm =userOptService.selectByTel(tel);
         String token ="";
         token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
         map.put("token",token);
-        return Resultbean.success(map);
+        map.put("user",userm);
+        return Resultbean.success(map,200);
     }
 
     @PostMapping("users/modify")
@@ -232,7 +233,7 @@ public class UserController {
         userm.setPassword(null);
         userOptService.update(userm);
         Map map =new HashMap();
-        return Resultbean.success(map);
+        return Resultbean.success(map,200);
     }
 
 

@@ -45,7 +45,7 @@ public class ToComment {
         HashMap hashMap =new HashMap();
         hashMap.put("sensitiveWord",set);
         barrageService.insertBarrage(barrage);
-        return  Resultbean.success(hashMap);
+        return  Resultbean.success(hashMap,200);
     }
     @ApiOperation("发表评论")
     @UserLoginToken
@@ -66,7 +66,7 @@ public class ToComment {
         HashMap hashMap =new HashMap();
         hashMap.put("sensitiveWord",set);
         commentService.insertComment(Comments.builder().contexts(context).username(username).sayId(saysId).build());
-        return Resultbean.success(hashMap);
+        return Resultbean.success(hashMap,200);
     }
 
 

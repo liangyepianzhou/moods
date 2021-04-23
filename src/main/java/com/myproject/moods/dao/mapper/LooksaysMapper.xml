@@ -80,4 +80,61 @@
       order by ${orderByClause}
     </if>
   </select>
+  <delete id="deleteByExample" parameterType="com.myproject.moods.pojo.LooksaysExample">
+    delete from looksays
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.myproject.moods.pojo.Looksays">
+    insert into looksays (username, say_id)
+    values (#{username,jdbcType=VARCHAR}, #{sayId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.myproject.moods.pojo.Looksays">
+    insert into looksays
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="username != null">
+        username,
+      </if>
+      <if test="sayId != null">
+        say_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="sayId != null">
+        #{sayId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.myproject.moods.pojo.LooksaysExample" resultType="java.lang.Long">
+    select count(*) from looksays
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update looksays
+    <set>
+      <if test="record.username != null">
+        username = #{record.username,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sayId != null">
+        say_id = #{record.sayId,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update looksays
+    set username = #{record.username,jdbcType=VARCHAR},
+      say_id = #{record.sayId,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
 </mapper>

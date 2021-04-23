@@ -233,6 +233,66 @@ public class WordsExample {
             addCriterion("word not between", value1, value2, "word");
             return (Criteria) this;
         }
+
+        public Criteria andGoodnumsIsNull() {
+            addCriterion("goodnums is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodnumsIsNotNull() {
+            addCriterion("goodnums is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodnumsEqualTo(Integer value) {
+            addCriterion("goodnums =", value, "goodnums");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodnumsNotEqualTo(Integer value) {
+            addCriterion("goodnums <>", value, "goodnums");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodnumsGreaterThan(Integer value) {
+            addCriterion("goodnums >", value, "goodnums");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodnumsGreaterThanOrEqualTo(Integer value) {
+            addCriterion("goodnums >=", value, "goodnums");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodnumsLessThan(Integer value) {
+            addCriterion("goodnums <", value, "goodnums");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodnumsLessThanOrEqualTo(Integer value) {
+            addCriterion("goodnums <=", value, "goodnums");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodnumsIn(List<Integer> values) {
+            addCriterion("goodnums in", values, "goodnums");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodnumsNotIn(List<Integer> values) {
+            addCriterion("goodnums not in", values, "goodnums");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodnumsBetween(Integer value1, Integer value2) {
+            addCriterion("goodnums between", value1, value2, "goodnums");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodnumsNotBetween(Integer value1, Integer value2) {
+            addCriterion("goodnums not between", value1, value2, "goodnums");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

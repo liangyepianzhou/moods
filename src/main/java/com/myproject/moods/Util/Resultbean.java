@@ -19,23 +19,23 @@ public  class  Resultbean {
     public Resultbean() {
     }
     
-    public static Resultbean success(List<Object> list){
+    public static Resultbean success(List<Object> list,int code){
         Map<String,Object> map=new HashMap<>();
         map.put("list",list);
-        return success(map);
+        return success(map,code);
     }
     
-    public static Resultbean success(Map<String,Object> map){
+    public static Resultbean success(Map<String,Object> map,int code){
        Resultbean resultbean =new Resultbean();
-        resultbean.setCode(200);
+        resultbean.setCode(code);
         resultbean.setMessage("success");
         resultbean.setData(map);
         return resultbean;
 
     }
-    public static Resultbean success(){
+    public static Resultbean success(int code){
         Resultbean resultbean =new Resultbean();
-        resultbean.setCode(200);
+        resultbean.setCode(code);
         resultbean.setMessage("success");
         return resultbean;
     }

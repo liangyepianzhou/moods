@@ -3,6 +3,7 @@ package com.myproject.moods.pojo;
 import lombok.Builder;
 
 import java.io.Serializable;
+
 @Builder
 public class Comments implements Serializable {
     private Long commentId;

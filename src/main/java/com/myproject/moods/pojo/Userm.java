@@ -4,6 +4,7 @@ import lombok.Builder;
 
 import java.io.Serializable;
 import java.util.Date;
+
 @Builder
 public class Userm implements Serializable {
     private String username;

@@ -73,7 +73,7 @@ public class FileController {
 //        Log.info("newPath"+newName);
         File file1 =new File(new File(avatarPath +newName).getAbsolutePath()) ;
         fileUploadService.storeAvatar(file,file1,username);
-        return Resultbean.success();
+        return Resultbean.success(200);
     }
     @UserLoginToken
     @ApiOperation("说说上传的接口")
@@ -136,7 +136,7 @@ public class FileController {
         saysService.insertSays(Says.builder().picture(photoPaths).saywords(says).var(adNewName).username(username).build());
         HashMap hashMap =new HashMap();
         hashMap.put("sensitiveWord",set);
-        return  Resultbean.success(hashMap);
+        return  Resultbean.success(hashMap,200);
     }
 
 

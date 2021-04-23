@@ -45,8 +45,7 @@ public class FileUploadService {
 
     /**
      * 负责所有的文件上传到服务器保存的工作
-     * @param inputStream
-     * @param ToWhere
+     *
      * @throws IOException
      */
     public void storeFile(MultipartFile file,File file1) throws IOException {

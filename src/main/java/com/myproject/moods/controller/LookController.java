@@ -38,7 +38,7 @@ public class LookController {
         @PostMapping("/says/someone")
         public Resultbean SeeSomeOneSays(@ApiParam(name = "username",value = "用户名",required = true) @RequestParam("username") String username){
                 List list =saysService.searchByName(username);
-                return Resultbean.success(list);
+                return Resultbean.success(list,200);
         }
         @ApiParam("查看最近的说说")
         @UserLoginToken
@@ -46,7 +46,7 @@ public class LookController {
         public  Resultbean seeSomeSays(@ApiParam(name= "count",value = "需要的说说条数",required = true)  @RequestParam(name = "count") int count){
              List list  = saysService.searchSome(count);
 
-             return Resultbean.success(list);
+             return Resultbean.success(list,200);
         }
         @ApiParam("获取弹幕")
         @UserLoginToken
@@ -55,7 +55,7 @@ public class LookController {
                 String [] paths = adPath.split("/");
                 String name =paths[paths.length-1];
                 List list=barrageService.barrageget(name);
-                return  Resultbean.success(list);
+                return  Resultbean.success(list,200);
         }
         @ApiOperation("收藏说说")
         @UserLoginToken
@@ -71,7 +71,7 @@ public class LookController {
                         throw new RuntimeException("401");
                 }
                collectService.insertColl(Collections.builder().username(username).build());
-                return Resultbean.success();
+                return Resultbean.success(200);
 
         }
 
@@ -88,7 +88,7 @@ public class LookController {
                         throw new RuntimeException("401");
                 }
                 List list=collectService.seeColl(username);
-                return Resultbean.success(list);
+                return Resultbean.success(list,200);
         }
 
 

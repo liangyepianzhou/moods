@@ -8,6 +8,7 @@
     <result column="var" jdbcType="VARCHAR" property="var" />
     <result column="times" jdbcType="DATE" property="times" />
     <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="goodnums" jdbcType="INTEGER" property="goodnums" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    say_id, saywords, picture, var, times, username
+    say_id, saywords, picture, var, times, username, goodnums
   </sql>
   <select id="selectByExample" parameterType="com.myproject.moods.pojo.SaysExample" resultMap="BaseResultMap">
     select
@@ -90,10 +91,6 @@
     from says
     where say_id = #{sayId,jdbcType=BIGINT}
   </select>
-  <select id="selectSomeThing" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select *  from says order by say_id desc limit #{count,jdbcType=BIGINT}
---     SELECT * FROM says ORDER BY say_id DESC LIMIT 1
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from says
     where say_id = #{sayId,jdbcType=BIGINT}
@@ -106,9 +103,11 @@
   </delete>
   <insert id="insert" parameterType="com.myproject.moods.pojo.Says">
     insert into says (say_id, saywords, picture, 
-      var, times, username)
+      var, times, username, 
+      goodnums)
     values (#{sayId,jdbcType=BIGINT}, #{saywords,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, 
-      #{var,jdbcType=VARCHAR}, #{times,jdbcType=DATE}, #{username,jdbcType=VARCHAR})
+      #{var,jdbcType=VARCHAR}, #{times,jdbcType=DATE}, #{username,jdbcType=VARCHAR}, 
+      #{goodnums,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.myproject.moods.pojo.Says">
     insert into says
@@ -131,6 +130,9 @@
       <if test="username != null">
         username,
       </if>
+      <if test="goodnums != null">
+        goodnums,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="sayId != null">
@@ -150,6 +152,9 @@
       </if>
       <if test="username != null">
         #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="goodnums != null">
+        #{goodnums,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -180,6 +185,9 @@
       <if test="record.username != null">
         username = #{record.username,jdbcType=VARCHAR},
       </if>
+      <if test="record.goodnums != null">
+        goodnums = #{record.goodnums,jdbcType=INTEGER},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -192,7 +200,8 @@
       picture = #{record.picture,jdbcType=VARCHAR},
       var = #{record.var,jdbcType=VARCHAR},
       times = #{record.times,jdbcType=DATE},
-      username = #{record.username,jdbcType=VARCHAR}
+      username = #{record.username,jdbcType=VARCHAR},
+      goodnums = #{record.goodnums,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -215,6 +224,9 @@
       <if test="username != null">
         username = #{username,jdbcType=VARCHAR},
       </if>
+      <if test="goodnums != null">
+        goodnums = #{goodnums,jdbcType=INTEGER},
+      </if>
     </set>
     where say_id = #{sayId,jdbcType=BIGINT}
   </update>
@@ -224,7 +236,12 @@
       picture = #{picture,jdbcType=VARCHAR},
       var = #{var,jdbcType=VARCHAR},
       times = #{times,jdbcType=DATE},
-      username = #{username,jdbcType=VARCHAR}
+      username = #{username,jdbcType=VARCHAR},
+      goodnums = #{goodnums,jdbcType=INTEGER}
     where say_id = #{sayId,jdbcType=BIGINT}
   </update>
+  <select id="selectSomeThing" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select *  from says order by say_id desc limit #{count,jdbcType=BIGINT}
+--     SELECT * FROM says ORDER BY say_id DESC LIMIT 1
+  </select>
 </mapper>

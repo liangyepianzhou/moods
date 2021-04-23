@@ -20,8 +20,6 @@ public interface SaysMapper {
 
     Says selectByPrimaryKey(Long sayId);
 
-    List<Says> selectSomeThing(int sayId);
-
     int updateByExampleSelective(@Param("record") Says record, @Param("example") SaysExample example);
 
     int updateByExample(@Param("record") Says record, @Param("example") SaysExample example);
@@ -29,4 +27,5 @@ public interface SaysMapper {
     int updateByPrimaryKeySelective(Says record);
 
     int updateByPrimaryKey(Says record);
+     List<Says> selectSomeThing(int i);
 }
