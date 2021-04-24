@@ -17,10 +17,17 @@ public class RedisDistributeLock {
     @Autowired
     StringRedisTemplate redisTemplate;
 
-
+    /**
+     * 不断重试，尽可能解决问题提出的地方
+     * @param lock_id
+     * @param milliSecond
+     * @return
+     */
     public boolean getLock(String lock_id,long milliSecond ){
         boolean success=false;
-        success=  redisTemplate.opsForValue().setIfAbsent(lock_id,"lock",milliSecond, TimeUnit.MICROSECONDS);
+        do {
+            success = redisTemplate.opsForValue().setIfAbsent(lock_id, "lock", milliSecond, TimeUnit.MICROSECONDS);
+        }while (!success);
         return success;
     }
 

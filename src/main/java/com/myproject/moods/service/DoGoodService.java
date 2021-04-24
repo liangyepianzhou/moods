@@ -38,12 +38,12 @@ public class DoGoodService {
          * redis实现分布式锁，以说说id为key
          * 尚未做缓存
          */
-        while(!redisDistributeLock.getLock(String.valueOf(says_id),5000)) {
+         redisDistributeLock.getLock(String.valueOf(says_id),5000);
             says = saysMapper.selectByPrimaryKey(says_id);
             says.setGoodnums(says.getGoodnums() + 1);
             saysMapper.updateByPrimaryKeySelective(says);
             redisDistributeLock.releaseLock(String.valueOf(says_id));
-        }
+
         CommentsExample commentsExample =new CommentsExample();
         CommentsExample.Criteria criteria =commentsExample.createCriteria();
         criteria.andSayIdEqualTo(says.getSayId());
@@ -58,12 +58,12 @@ public class DoGoodService {
          * 使用redis实现分布式锁
          * 尚需要redis实现缓存
          */
-        while (!redisDistributeLock.getLock(String.valueOf(comment_id),5000)){
+        redisDistributeLock.getLock(String.valueOf(comment_id),5000);
       Comments comments =commentsMapper.selectByPrimaryKey(comment_id);
       commentsMapper.updateByPrimaryKeySelective(comments);
       redisDistributeLock.releaseLock(String.valueOf(comment_id));
        }
-    }
+
 
 
     /**
