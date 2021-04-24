@@ -2,6 +2,7 @@ package com.myproject.moods.service;
 
 import com.myproject.moods.dao.mapper.CommentsMapper;
 import com.myproject.moods.dao.mapper.SaysMapper;
+import com.myproject.moods.distribute.RedisDistributeLock;
 import com.myproject.moods.pojo.Comments;
 import com.myproject.moods.pojo.CommentsExample;
 import com.myproject.moods.pojo.Says;
@@ -24,18 +25,25 @@ public class DoGoodService {
     PopularPool popularPool;
     @Autowired
     CommentsMapper commentsMapper;
+    @Autowired
+    RedisDistributeLock redisDistributeLock;
     /**
      * 为说说点赞的服务方法
      * @param says_id
      */
     public void toSaysGood(Long says_id ){
-        /**
-         * 需要redis实现
-         */
-        Says  says= saysMapper.selectByPrimaryKey(says_id);
-        says.setGoodnums(says.getGoodnums()+1);
-        saysMapper.updateByPrimaryKeySelective(says);
+        Says says =null;
 
+        /**
+         * redis实现分布式锁，以说说id为key
+         * 尚未做缓存
+         */
+        while(!redisDistributeLock.getLock(String.valueOf(says_id),5000)) {
+            says = saysMapper.selectByPrimaryKey(says_id);
+            says.setGoodnums(says.getGoodnums() + 1);
+            saysMapper.updateByPrimaryKeySelective(says);
+            redisDistributeLock.releaseLock(String.valueOf(says_id));
+        }
         CommentsExample commentsExample =new CommentsExample();
         CommentsExample.Criteria criteria =commentsExample.createCriteria();
         criteria.andSayIdEqualTo(says.getSayId());
@@ -47,10 +55,14 @@ public class DoGoodService {
     }
     public void toCommentGood(Long comment_id){
         /**
-         * 需要redis实现
+         * 使用redis实现分布式锁
+         * 尚需要redis实现缓存
          */
+        while (!redisDistributeLock.getLock(String.valueOf(comment_id),5000)){
       Comments comments =commentsMapper.selectByPrimaryKey(comment_id);
       commentsMapper.updateByPrimaryKeySelective(comments);
+      redisDistributeLock.releaseLock(String.valueOf(comment_id));
+       }
     }
 
 

@@ -1,5 +1,6 @@
 package com.myproject.moods.service;
 
+import com.myproject.moods.distribute.RedisDistributeLock;
 import com.myproject.moods.pojo.Says;
 import com.myproject.moods.pojo.SaysNode;
 import com.myproject.moods.recommend.Keyword;
@@ -20,6 +21,8 @@ public class PopularPool {
     public  int minPopular=0;
     public  int coreSize;
     public  int size;
+    @Autowired
+    RedisDistributeLock redisDistributeLock;
     /**
      * 不妨设最大标签数十二个，因为刚好hashmap初始容量16，扩容因子0.75
      */
@@ -56,9 +59,12 @@ public class PopularPool {
          * 发生较大波动时加入到推荐池中
          */
         if(popularFire-minPopular>saltus){
-            synchronized (this){
+
+            while(!redisDistributeLock.getLock("popularPool",50000)){
             selectAndReplaceMin(SaysNode.builder().says(says).popularFire(popularFire).build());
+            redisDistributeLock.releaseLock("popularPool");
             }
+
         }
     }
     public  HashSet<SaysNode> getPool(){
@@ -94,6 +100,7 @@ public class PopularPool {
 
     /**
      * 找到并替换最小值
+     *
      * @param saysNode
      */
     private void selectAndReplaceMin(SaysNode saysNode){
@@ -162,6 +169,7 @@ public class PopularPool {
 
     /**
      * 在池子里找一个最相似的说说
+     * 遍历使用的Iterator用的是快照，无需考虑线程安全问题
      * @param says
      */
     public Says select(Says says){

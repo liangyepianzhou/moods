@@ -121,18 +121,19 @@ public class UserController {
      */
     @ApiOperation(value = "为用户重置密码的接口方法")
     @PostMapping("/users/reset_psw")
-    public Resultbean reset_psw(@ApiParam(name = "name",value = "用于进行主键查询",required = true) @RequestParam(name = "name") String name,
+    public Resultbean reset_psw(@ApiParam(name = "name",value = "用于进行主键查询",required = false) @RequestParam(name = "name") String name,
                                 @ApiParam(name = "tel",value = "用户手机号",required = true)  @RequestParam(name = "tel")String tel,
                                 @ApiParam(name = "psw",value = "新密码",required = true) @RequestParam(name = "psw") String psw,
                                 @ApiParam(name = "pin",value = "用户输入的验证码",required = true)   @RequestParam(name = "pin") String pin
                                 ){
+
         String newPsw = DigestUtils.md5Digest(psw.getBytes()).toString();
        return msgCheck(tel,pin,()->{
            Map map =new HashMap();
            Userm userm =Userm.builder().username(name).password(newPsw).build();
            userOptService.update(userm);
            map.put("msg","密码修改完成");
-          String token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
+            String token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
            map.put("token",token);
            return  Resultbean.success(map,200);
        });
@@ -239,6 +240,7 @@ public class UserController {
         userm.setPassword(null);
         userOptService.update(userm);
         Map map =new HashMap();
+        map.put("newUser",userm);
         return Resultbean.success(map,200);
     }
 

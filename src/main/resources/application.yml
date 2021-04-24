@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prod
+    active: dev
 ---
 spring:
   profiles: dev
@@ -14,6 +14,10 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+#      redis 配置
+  redis:
+    host: 47.98.192.167
+    port: 7001
 server:
   port: 8800
 ---

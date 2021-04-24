@@ -85,7 +85,16 @@ public class UserOptService {
     }
 
     public void update(Userm userm){
-        usersMapper.updateByPrimaryKeySelective(userm);
+        if(userm.getUsername()!=null){
+            usersMapper.updateByPrimaryKeySelective(userm);
+            return;
+        }
+        else {
+            UsermExample usermExample =new UsermExample();
+            UsermExample.Criteria criteria =usermExample.createCriteria();
+            criteria.andPhoneEqualTo(userm.getPhone());
+            usersMapper.updateByExampleSelective(userm,usermExample);
+        }
     }
 
     public  Userm selectByTel(String tel){
