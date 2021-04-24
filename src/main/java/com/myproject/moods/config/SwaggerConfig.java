@@ -37,7 +37,7 @@ public class SwaggerConfig {
         private ApiInfo apiInfo(){
             return new ApiInfoBuilder()
                     .title("漂流瓶接口文档")
-                    .description("用户漂流瓶项目的相关接口的文档")
+                    .description("用户漂流瓶项目的相关接口的文档，token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOlsieHgiLCIxNTcyMzExNzcwNCJdLCJleHAiOjkyNDY0NTYwMDAwfQ.mgiynTW9RJlocFqAvFVpmOhRELjO123Ip-3J0Ibc26g")
 //                    .termsOfServiceUrl("http://localhost:8080/hello")
                     .version("1.0")
                     .build();

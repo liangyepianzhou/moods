@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author 孟祥迎
@@ -61,7 +58,7 @@ public class FileUploadService {
         });
     }
     public void storeAvatar(MultipartFile file,File file1,String username){
-            executorService.submit(()->{
+         Future future= executorService.submit(()->{
                 try {
                     if(!file1.exists()){
                      file1.getParentFile().mkdirs();
@@ -71,6 +68,13 @@ public class FileUploadService {
                     e.printStackTrace();
                 }
             });
+        try {
+            future.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         avatarUpload(file1.getPath(),username);
     }
 

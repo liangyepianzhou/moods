@@ -22,6 +22,9 @@ import java.util.List;
 public class UserOptService {
     @Autowired
     UsermMapper usersMapper;
+    final  String avatarPathMan ="src/main/resources/file/avatar/资源1.png";
+    final  String avatarPathWoMan ="src/main/resources/file/avatar/资源2.png";
+
 
     /**
      * 查看用户名是否存在
@@ -62,7 +65,12 @@ public class UserOptService {
         calendar.setTime(date);
         calendar.add(Calendar.YEAR,-age);
         date.setTime(calendar.getTime().getTime());
-        Userm userm =Userm.builder().age(date).password(password).phone(phone).sex(sex).username(username).build();
+        String path;
+        if(sex=true){
+            path =avatarPathMan;
+        }
+        else {path=avatarPathWoMan;}
+        Userm userm =Userm.builder().age(date).password(password).phone(phone).sex(sex).username(username).avatar(path).build();
         usersMapper.insert(userm);
     }
 

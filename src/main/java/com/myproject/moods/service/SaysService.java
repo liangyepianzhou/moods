@@ -3,9 +3,12 @@ package com.myproject.moods.service;
 import com.myproject.moods.dao.mapper.SaysMapper;
 import com.myproject.moods.pojo.Says;
 import com.myproject.moods.pojo.SaysExample;
+import com.myproject.moods.pojo.SaysNode;
 import com.myproject.moods.pojo.Sayx;
+import com.myproject.moods.recommend.TFIDFAnalyzer;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -25,8 +28,12 @@ public class SaysService {
     final  String photoPath ="src/main/resources/file/photo/";
     @Autowired
     SaysMapper saysMapper;
-    public  void insertSays(Says says){
+    @Autowired
+    PopularPool popularPool;
+
+    public Says insertSays(Says says){
         saysMapper.insert(says);
+       return popularPool.select(says);
     }
 
     public List<Says> searchByName(String username){
@@ -57,4 +64,8 @@ public class SaysService {
         }
         return list1;
     }
+
+
+
+
 }

@@ -148,6 +148,10 @@ public class UserController {
                                @ApiParam(name = "pin",value = "用户输入的验证码",required = true)  @RequestParam(name = "pin") String pin
                                ){
             String newPsw = DigestUtils.md5DigestAsHex(psw.getBytes()).toString();
+             Map hashMap =new HashMap();
+            if(userOptService.isPhone(tel)){hashMap.put("msg","电话已存在");return Resultbean.success(hashMap,100);}
+            if(userOptService.isUsername(name)){hashMap.put("msg","用户名已存在");return Resultbean.success(hashMap,200);}
+
 
            return msgCheck(tel,pin,()->{
                userOptService.insert(name,tel,gender,age,psw);
@@ -202,6 +206,9 @@ public class UserController {
                               @ApiParam(name = "psw",value = "新密码",required = false)  @RequestParam(name = "psw",required = false)  String psw,
                               @ApiParam(name = "pin",value = "用户输入的验证码",required = false)  @RequestParam(name = "pin",required = false) String pin
                               ){
+
+
+
         Map map =new HashMap();
         if(psw!=null){
             if(!userOptService.selectByTel(tel).getPassword().equals(psw)){
@@ -225,7 +232,6 @@ public class UserController {
         map.put("user",userm);
         return Resultbean.success(map,200);
     }
-
     @PostMapping("users/modify")
     @ApiOperation("修改用户基本信息")
     @UserLoginToken
