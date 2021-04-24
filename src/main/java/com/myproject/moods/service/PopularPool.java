@@ -2,6 +2,9 @@ package com.myproject.moods.service;
 
 import com.myproject.moods.pojo.Says;
 import com.myproject.moods.pojo.SaysNode;
+import com.myproject.moods.recommend.Keyword;
+import com.myproject.moods.recommend.TFIDFAnalyzer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -12,14 +15,23 @@ import java.util.*;
  * @version 1.0
  * @Date 2021-04-21
  */
+@Component
 public class PopularPool {
     public  int minPopular=0;
     public  int coreSize;
     public  int size;
+    /**
+     * 不妨设最大标签数十二个，因为刚好hashmap初始容量16，扩容因子0.75
+     */
+    int topInt=12;
     public  SaysNode headSaysNode ;
-    public  HashMap<Says,SaysNode> hashMap =new HashMap();
-    public  int saltus= maxNumber(minPopular/100,10);
+//    public  HashMap<Says,SaysNode> hashMap =new HashMap();
+    public  HashSet<SaysNode> hashSet =new HashSet<>();
 
+
+    public  int saltus= maxNumber(minPopular/100,10);
+    @Autowired
+    TFIDFAnalyzer tfidfAnalyzer;
 
     /**
      * 推荐池外的说说 放进推荐池中的算法
@@ -49,8 +61,8 @@ public class PopularPool {
             }
         }
     }
-    public  HashMap getPool(){
-        return hashMap;
+    public  HashSet<SaysNode> getPool(){
+        return hashSet;
     }
 
     /**
@@ -60,7 +72,18 @@ public class PopularPool {
      */
     private  void putNode(Says says,int popularFire){
         SaysNode saysNode=SaysNode.builder().says(says).popularFire(popularFire).build();
-        hashMap.put(says,saysNode);
+        /**
+         * 添加标签 及TF-IDF值
+         */
+        HashMap map =new HashMap();
+        List<Keyword> list =tfidfAnalyzer.analyze(says.getSaywords(),topInt);
+        for (Keyword keyword :list
+             ) {
+            map.put(keyword.getName(),keyword.getTfidfvalue());
+        }
+        saysNode.setHashMap(map);
+
+        hashSet.add(saysNode);
     }
 
 
@@ -78,17 +101,17 @@ public class PopularPool {
         SaysNode scd;
         SaysNode nowNode;
         int secMinPopular =saysNode.popularFire;
-        Set keySet = hashMap.keySet();
-        Iterator iterator= keySet.iterator();
 
-        min =hashMap.get(iterator.next());
+        Iterator iterator= hashSet.iterator();
+
+        min =(SaysNode) iterator.next();
 
         /**
          * 遍历得出最小值
          * 并记录次一个的受欢迎度
          */
         if(iterator.hasNext()){
-            nowNode=hashMap.get(iterator.next());
+            nowNode=(SaysNode) iterator.next();
             if(nowNode.popularFire<min.popularFire){ //记录最小的
                 min =nowNode;
                 secMinPopular=min.popularFire;
@@ -104,8 +127,22 @@ public class PopularPool {
          * 则插入更新推荐池
          */
         if(min.popularFire<saysNode.popularFire){
-            hashMap.remove(min.says);
-            hashMap.put(saysNode.says,saysNode);
+            /**
+             * 添加标签 及TF-IDF值
+             */
+            HashMap map =new HashMap();
+            List<Keyword> list =tfidfAnalyzer.analyze(saysNode.says.getSaywords(),topInt);
+            for (Keyword keyword :list
+            ) {
+                map.put(keyword.getName(),keyword.getTfidfvalue());
+            }
+            saysNode.setHashMap(map);
+
+
+//            hashMap.remove(min.says);
+            hashSet.remove(min);
+//            hashMap.put(saysNode.says,saysNode);
+            hashSet.add(saysNode);
             if(saysNode.popularFire<secMinPopular){
                 minPopular=saysNode.popularFire;
             }
@@ -123,7 +160,61 @@ public class PopularPool {
         saltus= maxNumber(minPopular/100,10);
     }
 
+    /**
+     * 在池子里找一个最相似的说说
+     * @param says
+     */
+    public Says select(Says says){
+        if(hashSet.size()==0) return says;
 
+        SaysNode saysNode=SaysNode.builder().says(says).build();
+        /**
+         * 添加标签 及TF-IDF值
+         */
+        HashMap map =new HashMap();
+        List<Keyword> list =tfidfAnalyzer.analyze(saysNode.says.getSaywords(),topInt);
+        for (Keyword keyword :list
+        ) {
+            map.put(keyword.getName(),keyword.getTfidfvalue());
+        }
+        saysNode.setHashMap(map);
+
+        Iterator iterator =hashSet.iterator();
+        SaysNode first =(SaysNode)iterator.next();
+        //两个说说间的相似度
+        double similar =getSimilar(saysNode.hashMap,first.hashMap);
+        double temp;
+
+        for (SaysNode say :hashSet
+             ) {
+            temp=getSimilar(saysNode.hashMap,say.hashMap);
+            if(temp>similar){
+                similar=temp;
+                first=say;
+            }
+        }
+
+    return first.says;
+
+    }
+
+    /**
+     * 获取两个说说间的相似度
+     * @param data
+     * @param inPool
+     * @return
+     */
+    private double getSimilar(HashMap<String,Double> data,HashMap<String,Double> inPool){
+        Set<String> set =data.keySet();
+        double sum=0.0;
+        for (String arg: set
+             ) {
+            if(inPool.get(arg)!=null)
+            sum+=data.get(arg)*inPool.get(arg);
+            else continue;
+        }
+        return sum;
+    }
 
 
 
