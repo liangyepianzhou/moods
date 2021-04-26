@@ -1,11 +1,11 @@
 spring:
   profiles:
-    active: dev
+    active: prod
 ---
 spring:
   profiles: dev
   datasource:
-      url: jdbc:mysql://localhost:3306/moods?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+      url: jdbc:mysql://localhost:3306/moods?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
 #    &AllowPublicKeyRetrieval=True
       username: root
       password: 123456
@@ -17,14 +17,15 @@ spring:
 #      redis 配置
   redis:
     host: 47.98.192.167
-    port: 7001
+    port: 6379
+    password: 1234
 server:
   port: 8800
 ---
 spring:
   profiles: prod
   datasource:
-    url: jdbc:mysql://47.98.192.167:3306/moods?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://47.98.192.167:3306/moods?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     #    &AllowPublicKeyRetrieval=True
     username: root
     password: root
@@ -33,5 +34,9 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+  redis:
+    host: 47.98.192.167
+    port: 6379
+    password: 1234
 server:
   port: 8800

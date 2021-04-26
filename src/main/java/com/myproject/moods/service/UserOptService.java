@@ -1,9 +1,12 @@
 package com.myproject.moods.service;
 
+import com.myproject.moods.Util.Resultbean;
 import com.myproject.moods.dao.mapper.UsermMapper;
 
 import com.myproject.moods.pojo.Userm;
 import com.myproject.moods.pojo.UsermExample;
+
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.DelegatingServerHttpResponse;
 import org.springframework.stereotype.Service;
@@ -56,7 +59,7 @@ public class UserOptService {
      * @param age Date类型，模糊记载用户的出生年月日
      * @param password
      */
-    public  void insert(String username ,String phone,boolean sex, int age,String password ){
+    public  Userm insert(String username ,String phone,boolean sex, int age,String password ){
         Date date=new Date(System.currentTimeMillis());
         date.getTime();
         // 日期格式化类
@@ -72,6 +75,7 @@ public class UserOptService {
         else {path=avatarPathWoMan;}
         Userm userm =Userm.builder().age(date).password(password).phone(phone).sex(sex).username(username).avatar(path).build();
         usersMapper.insert(userm);
+        return userm;
     }
 
 
@@ -93,6 +97,7 @@ public class UserOptService {
             UsermExample usermExample =new UsermExample();
             UsermExample.Criteria criteria =usermExample.createCriteria();
             criteria.andPhoneEqualTo(userm.getPhone());
+            System.out.println(userm.getUsername());
             usersMapper.updateByExampleSelective(userm,usermExample);
         }
     }
@@ -101,7 +106,10 @@ public class UserOptService {
         UsermExample usermExample =new UsermExample();
         UsermExample.Criteria criteria= usermExample.createCriteria();
         criteria.andPhoneEqualTo(tel);
-        return usersMapper.selectByExample(usermExample).get(0);
+        List<Userm> list =usersMapper.selectByExample(usermExample);
+        if(list.size()>=1)
+        return list.get(0);
+        else return null;
     }
 
 }

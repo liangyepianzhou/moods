@@ -121,23 +121,26 @@ public class UserController {
      */
     @ApiOperation(value = "为用户重置密码的接口方法")
     @PostMapping("/users/reset_psw")
-    public Resultbean reset_psw(@ApiParam(name = "name",value = "用于进行主键查询",required = false) @RequestParam(name = "name") String name,
+    public Resultbean reset_psw(@ApiParam(name = "name",value = "用于进行主键查询",required = false) @RequestParam(name = "name",required = false) String name,
                                 @ApiParam(name = "tel",value = "用户手机号",required = true)  @RequestParam(name = "tel")String tel,
                                 @ApiParam(name = "psw",value = "新密码",required = true) @RequestParam(name = "psw") String psw,
                                 @ApiParam(name = "pin",value = "用户输入的验证码",required = true)   @RequestParam(name = "pin") String pin
                                 ){
 
-        String newPsw = DigestUtils.md5Digest(psw.getBytes()).toString();
+//        String newPsw = DigestUtils.md5Digest(psw.getBytes()).toString();
+        if(name!=null&&!userOptService.isUsername(name)){
+            Map map =new HashMap();
+            map.put("msg","用户名不存在");
+        }
        return msgCheck(tel,pin,()->{
            Map map =new HashMap();
-           Userm userm =Userm.builder().username(name).password(newPsw).build();
+           Userm userm =Userm.builder().username(name).password(psw).phone(tel).build();
            userOptService.update(userm);
            map.put("msg","密码修改完成");
             String token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
            map.put("token",token);
            return  Resultbean.success(map,200);
        });
-
     }
     @ApiOperation(value = "用户注册接口")
     @PostMapping(value = "/register")
@@ -151,18 +154,17 @@ public class UserController {
             String newPsw = DigestUtils.md5DigestAsHex(psw.getBytes()).toString();
              Map hashMap =new HashMap();
             if(userOptService.isPhone(tel)){hashMap.put("msg","电话已存在");return Resultbean.success(hashMap,100);}
-            if(userOptService.isUsername(name)){hashMap.put("msg","用户名已存在");return Resultbean.success(hashMap,200);}
+            if(userOptService.isUsername(name)){hashMap.put("msg","用户名已存在");return Resultbean.success(hashMap,100);}
 
 
            return msgCheck(tel,pin,()->{
-               userOptService.insert(name,tel,gender,age,psw);
+                Userm userm =userOptService.insert(name,tel,gender,age,psw);
                 Map map =new HashMap();
                 map.put("msg","注册成功");
+                map.put("user",userm);
                 return  Resultbean.success(map,200);
             });
     }
-
-
     /**
      * 用于检测短信验证码是否正确，是否是在五分钟内的
      * @param tel
@@ -207,28 +209,25 @@ public class UserController {
                               @ApiParam(name = "psw",value = "新密码",required = false)  @RequestParam(name = "psw",required = false)  String psw,
                               @ApiParam(name = "pin",value = "用户输入的验证码",required = false)  @RequestParam(name = "pin",required = false) String pin
                               ){
-
-
-
+        Map hashMap =new HashMap();
+        if(!userOptService.isPhone(tel)){hashMap.put("msg","电话不存在");return Resultbean.success(hashMap,100);}
+        Userm userm =userOptService.selectByTel(tel);
+       String token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
         Map map =new HashMap();
         if(psw!=null){
-            if(!userOptService.selectByTel(tel).getPassword().equals(psw)){
+            if(userm.getPassword().equals(psw)){
               map.put("msg","账户密码错误");
               return Resultbean.success(map,100);
             }
         }
         else if(pin!=null){
            return msgCheck(tel,pin,()->{
-                Userm userm =userOptService.selectByTel(tel);
-                String token ="";
-                token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
+                if(userm==null )return Resultbean.success(100);
                 map.put("token",token);
-                return Resultbean.success(map,200);
+               map.put("user",userm);
+               return Resultbean.success(map,200);
             });
         }
-        Userm userm =userOptService.selectByTel(tel);
-        String token ="";
-        token = JWT.create().withAudience(userm.getUsername(),userm.getPhone()).withExpiresAt(new Date(3000,1,1)).sign(Algorithm.HMAC256(userm.getPassword()));
         map.put("token",token);
         map.put("user",userm);
         return Resultbean.success(map,200);
@@ -237,13 +236,12 @@ public class UserController {
     @ApiOperation("修改用户基本信息")
     @UserLoginToken
     public  Resultbean modify(@ApiParam(name = "userm",value = "除用户名及密码外都可以在此修改") @RequestBody Userm userm){
+        HashMap hashMap =new HashMap();
+        if(!userOptService.isPhone(userm.getPhone())){hashMap.put("msg","电话不存在");return Resultbean.success(hashMap,100);}
         userm.setPassword(null);
         userOptService.update(userm);
         Map map =new HashMap();
         map.put("newUser",userm);
         return Resultbean.success(map,200);
     }
-
-
-
 }

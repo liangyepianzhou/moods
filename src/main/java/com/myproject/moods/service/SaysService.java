@@ -53,11 +53,13 @@ public class SaysService {
         for (Says says:
              list) {
             Sayx sayx =new Sayx();
-            String [] pictures= says.getPicture().split("//+");
-            for (int i = 0; i <pictures.length ; i++) {
-                pictures[i]=new File(photoPath+pictures[i]).getAbsolutePath();
+            if(says.getPicture()!=null) {
+                String[] pictures = says.getPicture().split("//+");
+                for (int i = 0; i < pictures.length; i++) {
+                    pictures[i] = new File(photoPath + pictures[i]).getAbsolutePath();
+                }
+                sayx.setPictures(pictures);
             }
-            sayx.setPictures(pictures);
             sayx.setAd(new File(adPath+says.getVar()).getAbsolutePath());
             sayx.setSays(says);
             list1.add(sayx);

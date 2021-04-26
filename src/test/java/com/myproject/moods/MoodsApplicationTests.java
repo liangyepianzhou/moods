@@ -1,21 +1,20 @@
 package com.myproject.moods;
 
 import com.huaban.analysis.jieba.JiebaSegmenter;
-import com.myproject.moods.dao.mapper.SaysMapper;
+import com.myproject.moods.distribute.RedisDistributeCounter;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.awt.*;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest
 class MoodsApplicationTests {
 //   @Autowired
 //    SaysMapper saysMapper;
+@Autowired
+RedisDistributeCounter redisDistributeCounter ;
 
     @Test
     void c(){
@@ -39,8 +38,25 @@ class MoodsApplicationTests {
 
 
     }
+//    @Test
+//    public void test1(){
+//        MassageTask massageTask=new MassageTask();
+//        massageTask.getFuture().get()
+//    }
 
+@Test
+    void  test(){
 
+    Long res;
+    redisDistributeCounter.redisTemplate.opsForValue().set("商品A","0");
+    redisDistributeCounter.counterIncr("商品A",10);
+    System.out.println("商品A的数量为"+redisDistributeCounter.redisTemplate.opsForValue().get("商品A"));
+
+    do{
+         res =redisDistributeCounter.counterDesc("商品A", 1);
+        System.out.println("商品A的数量为" + redisDistributeCounter.redisTemplate.opsForValue().get("商品A"));
+    }while (res!=0);
+    }
 
 
 //    @Test
